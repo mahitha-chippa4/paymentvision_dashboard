@@ -97,4 +97,8 @@ Build the application for production:
 ```bash
 npm run build
 ```
-
+Screenshots of the Website:
+<img width="2666" height="1608" alt="image" src="https://github.com/user-attachments/assets/a169aeac-e173-4eb5-96f6-2f071a2b3869" />
+<img width="1265" height="607" alt="Screenshot 2025-07-26 at 8 21 36 PM" src="https://github.com/user-attachments/assets/7fef515e-d559-4295-ab66-997bcdfef923" />
+<img width="1263" height="651" alt="Screenshot 2025-07-26 at 8 32 21 PM" src="https://github.com/user-attachments/assets/be9775d4-8f8d-4ba4-8e1e-4a87712b22aa" />
+<img width="1303" height="821" alt="Screenshot 2025-07-26 at 8 21 03 PM" src="https://github.com/user-attachments/assets/a70dcacf-35a1-4b77-848a-e224a331e22c" />
