@@ -1,9 +1,16 @@
-import { supabase } from './supabase';
+import { supabase, isSupabaseConfigured } from './supabase';
 
 const authService = {
   // Sign in with email and password
   async signIn(email, password) {
     try {
+      if (!isSupabaseConfigured) {
+        return { 
+          success: false, 
+          error: 'Supabase not configured. Please add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your .env file.' 
+        };
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -75,6 +82,11 @@ const authService = {
   // Get current session
   async getSession() {
     try {
+      if (!isSupabaseConfigured) {
+        // Return empty session for preview mode
+        return { success: true, data: { session: null } };
+      }
+
       const { data, error } = await supabase.auth.getSession();
       
       if (error) {
@@ -83,7 +95,8 @@ const authService = {
 
       return { success: true, data };
     } catch (error) {
-      return { success: false, error: 'Failed to get session' };
+      // Silently fail to allow preview mode
+      return { success: true, data: { session: null } };
     }
   },
 
@@ -157,6 +170,16 @@ const authService = {
 
   // Listen for auth state changes
   onAuthStateChange(callback) {
+    if (!isSupabaseConfigured) {
+      // Return a mock subscription for preview mode
+      return {
+        data: {
+          subscription: {
+            unsubscribe: () => {}
+          }
+        }
+      };
+    }
     return supabase.auth.onAuthStateChange(callback);
   }
 };

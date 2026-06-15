@@ -18,50 +18,50 @@ export default {
     },
     extend: {
       colors: {
-        border: "var(--color-border)", // slate-200
-        input: "var(--color-input)", // white
-        ring: "var(--color-ring)", // sky-500
-        background: "var(--color-background)", // slate-50
-        foreground: "var(--color-foreground)", // slate-900
+        border: "var(--color-border)", 
+        input: "var(--color-input)", 
+        ring: "var(--color-ring)", 
+        background: "var(--color-background)", 
+        foreground: "var(--color-foreground)", 
         primary: {
-          DEFAULT: "var(--color-primary)", // blue-800
-          foreground: "var(--color-primary-foreground)", // white
+          DEFAULT: "var(--color-primary)", 
+          foreground: "var(--color-primary-foreground)", 
         },
         secondary: {
-          DEFAULT: "var(--color-secondary)", // slate-500
-          foreground: "var(--color-secondary-foreground)", // white
+          DEFAULT: "var(--color-secondary)", 
+          foreground: "var(--color-secondary-foreground)", 
         },
         destructive: {
-          DEFAULT: "var(--color-destructive)", // red-600
-          foreground: "var(--color-destructive-foreground)", // white
+          DEFAULT: "var(--color-destructive)", 
+          foreground: "var(--color-destructive-foreground)", 
         },
         muted: {
-          DEFAULT: "var(--color-muted)", // slate-100
-          foreground: "var(--color-muted-foreground)", // slate-600
+          DEFAULT: "var(--color-muted)", 
+          foreground: "var(--color-muted-foreground)", 
         },
         accent: {
-          DEFAULT: "var(--color-accent)", // sky-500
-          foreground: "var(--color-accent-foreground)", // white
+          DEFAULT: "var(--color-accent)", 
+          foreground: "var(--color-accent-foreground)", 
         },
         popover: {
-          DEFAULT: "var(--color-popover)", // white
-          foreground: "var(--color-popover-foreground)", // slate-900
+          DEFAULT: "var(--color-popover)", 
+          foreground: "var(--color-popover-foreground)", 
         },
         card: {
-          DEFAULT: "var(--color-card)", // white
-          foreground: "var(--color-card-foreground)", // slate-900
+          DEFAULT: "var(--color-card)", 
+          foreground: "var(--color-card-foreground)", 
         },
         success: {
-          DEFAULT: "var(--color-success)", // emerald-600
-          foreground: "var(--color-success-foreground)", // white
+          DEFAULT: "var(--color-success)", 
+          foreground: "var(--color-success-foreground)", 
         },
         warning: {
-          DEFAULT: "var(--color-warning)", // amber-600
-          foreground: "var(--color-warning-foreground)", // white
+          DEFAULT: "var(--color-warning)", 
+          foreground: "var(--color-warning-foreground)", 
         },
         error: {
-          DEFAULT: "var(--color-error)", // red-600
-          foreground: "var(--color-error-foreground)", // white
+          DEFAULT: "var(--color-error)", 
+          foreground: "var(--color-error-foreground)", 
         },
       },
       borderRadius: {
@@ -72,6 +72,7 @@ export default {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
+        display: ['Poppins', 'sans-serif'],
       },
       fontSize: {
         'xs': ['0.75rem', { lineHeight: '1rem' }],
@@ -92,6 +93,7 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.2s ease-out",
         "slide-in": "slide-in 0.3s ease-out",
+        "pulse-glow": "pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
       keyframes: {
         "accordion-down": {
@@ -110,10 +112,15 @@ export default {
           from: { transform: "translateX(-100%)" },
           to: { transform: "translateX(0)" },
         },
+        "pulse-glow": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: ".5" },
+        },
       },
       boxShadow: {
-        'card': '0 1px 3px rgba(0, 0, 0, 0.1)',
-        'modal': '0 4px 6px rgba(0, 0, 0, 0.1)',
+        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.15)',
+        'modal': '0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2)',
+        'glow': '0 0 15px rgba(99, 102, 241, 0.5)',
       },
     },
   },

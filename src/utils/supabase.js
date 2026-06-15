@@ -1,10 +1,21 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key';
 
-if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Missing Supabase environment variables');
-}
+// Create client with placeholder credentials if not configured
+// This allows the app to load in preview mode
+export const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true,
+    // Don't throw errors on missing credentials
+    storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+  }
+});
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+// Check if credentials are real
+export const isSupabaseConfigured = 
+  supabaseUrl !== 'https://placeholder.supabase.co' && 
+  supabaseKey !== 'placeholder-key';

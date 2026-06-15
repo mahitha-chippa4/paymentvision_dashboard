@@ -11,14 +11,24 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     let isMounted = true;
+    let timeoutId;
+    let subscription;
 
-    // Initialize auth state
+    // Initialize auth state with timeout
     const initializeAuth = async () => {
       try {
         setLoading(true);
         setAuthError(null);
 
-        const sessionResult = await authService.getSession();
+        // Add timeout to prevent hanging
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Timeout")), 3000)
+        );
+
+        const sessionResult = await Promise.race([
+          authService.getSession(),
+          timeoutPromise
+        ]);
 
         if (
           sessionResult?.success &&
@@ -39,8 +49,11 @@ export function AuthProvider({ children }) {
         }
       } catch (error) {
         if (isMounted) {
-          setAuthError("Failed to initialize authentication");
-          console.log("Auth initialization error:", error);
+          // Silently fail on timeout - allow preview mode
+          if (error.message !== "Timeout") {
+            setAuthError("Failed to initialize authentication");
+            console.log("Auth initialization error:", error);
+          }
         }
       } finally {
         if (isMounted) {
@@ -49,38 +62,50 @@ export function AuthProvider({ children }) {
       }
     };
 
-    initializeAuth();
+    // Setup auth state listener with error handling
+    try {
+      const {
+        data: { subscription: sub },
+      } = authService.onAuthStateChange(async (event, session) => {
+        if (!isMounted) return;
 
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = authService.onAuthStateChange(async (event, session) => {
-      if (!isMounted) return;
+        setAuthError(null);
 
-      setAuthError(null);
+        if (event === "SIGNED_IN" && session?.user) {
+          setUser(session.user);
 
-      if (event === "SIGNED_IN" && session?.user) {
-        setUser(session.user);
+          // Fetch user profile for signed in user
+          authService.getUserProfile(session.user.id).then((profileResult) => {
+            if (profileResult?.success && isMounted) {
+              setUserProfile(profileResult.data);
+            } else if (isMounted) {
+              setAuthError(profileResult?.error || "Failed to load user profile");
+            }
+          });
+        } else if (event === "SIGNED_OUT") {
+          setUser(null);
+          setUserProfile(null);
+        } else if (event === "TOKEN_REFRESHED" && session?.user) {
+          setUser(session.user);
+        }
+      });
+      subscription = sub;
+    } catch (error) {
+      console.log("Auth state listener error:", error);
+      // Continue without auth listener in preview mode
+    }
 
-        // Fetch user profile for signed in user
-        authService.getUserProfile(session.user.id).then((profileResult) => {
-          if (profileResult?.success && isMounted) {
-            setUserProfile(profileResult.data);
-          } else if (isMounted) {
-            setAuthError(profileResult?.error || "Failed to load user profile");
-          }
-        });
-      } else if (event === "SIGNED_OUT") {
-        setUser(null);
-        setUserProfile(null);
-      } else if (event === "TOKEN_REFRESHED" && session?.user) {
-        setUser(session.user);
-      }
-    });
+    // Start initialization after a small delay to allow UI to render
+    timeoutId = setTimeout(() => {
+      initializeAuth();
+    }, 50);
 
     return () => {
       isMounted = false;
-      subscription?.unsubscribe?.();
+      if (timeoutId) clearTimeout(timeoutId);
+      if (subscription) {
+        subscription?.unsubscribe?.();
+      }
     };
   }, []);
 
